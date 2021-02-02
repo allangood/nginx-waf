@@ -10,7 +10,7 @@ else
 fi
 
 if [ ! -e "/etc/nginx/nginx.conf" ]; then
-    cp -a /etc/nginx.orig/* /etc/nginx/
+    cp -an /etc/nginx.orig/* /etc/nginx/
 fi
 
 if [ "$1" = "nginx" -o "$1" = "nginx-debug" ]; then
