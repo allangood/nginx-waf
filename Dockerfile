@@ -49,6 +49,7 @@ export MODSEC_CONF_DIR="${NGINX_CONF_DIR}/modsec" && \
     bash \
     alpine-sdk \
     findutils \
+    patch \
   # modsecurity dependencies
     autoconf \
     automake \
@@ -71,6 +72,8 @@ export MODSEC_CONF_DIR="${NGINX_CONF_DIR}/modsec" && \
   echo "building modsecurity..." && \
   cd ModSecurity && \
   git submodule init && git submodule update && \
+  wget https://gist.githubusercontent.com/crsgists/0e1f6f7f1bd1f239ded64cecee46a11d/raw/181bc852065e9782367f1dc67c96d4d250e73a46/cve-2020-15598.patch \
+  patch -p1 < cve-2020-15598.patch \
   ./build.sh && \
   ./configure --prefix=/usr && \
   make -o 3 -j$(nproc) && \
