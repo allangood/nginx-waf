@@ -1,6 +1,13 @@
+FROM golang:1.12.0 AS builder
+# ... my go build steps (removed from this example)
+WORKDIR /builder/working/directory
+RUN curl -L https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz | tar zxvf - -C . && mv qemu-3.0.0+resin-arm/qemu-arm-static .
+
 FROM nginx:alpine
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
+# Copy across the qemu binary that was downloaded in the previous build step
+COPY --from=builder /builder/working/directory/qemu-arm-static /usr/bin
 
 # This image is based on:
 # https://github.com/vlche/docker-nginx-waf
@@ -137,7 +144,8 @@ RUN echo "cleaning all after build..." \
 
 # Final steps
 RUN echo "adding modsecurity dependency & openssl..." \
-  && apk add --no-cache libstdc++ yajl libmaxminddb openssl
+  && apk add --no-cache libstdc++ yajl libmaxminddb openssl \
+  && rm -f /usr/bin/qemu-arm-static
 
 COPY src /
 COPY conf/nginx.conf /etc/nginx.orig/
