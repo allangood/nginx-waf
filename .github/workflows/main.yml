@@ -2,11 +2,16 @@ name: 'Docker push to ARM'
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.github/workflows/**'
+      - 'examples/**'
     branches:
       - main
-    tags:
-      - v*
-    pull_request:
+    release:
+      types:
+        - created
 
 env:
   IMAGE_NAME: nginx-modsecurity
