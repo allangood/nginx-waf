@@ -1,9 +1,16 @@
-name: '[builder] CI for releases'
+name: 'Docker push to ARM'
 
 on:
   push:
     branches:
-      - master
+      - main
+    tags:
+      - v*
+    pull_request:
+
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: nginx-modsecurity
 
 jobs:
   release:
@@ -11,12 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Dockerhub login
-        env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-            echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
+      - name: Log into registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ github.actor }} --password-stdin
       - name: Set up Docker Buildx
         id: buildx
         uses: crazy-max/ghaction-docker-buildx@v1
@@ -28,4 +31,4 @@ jobs:
             --platform=linux/amd64,linux/arm/v7,linux/arm64 \
             --output "type=image,push=true" \
             --file ./Dockerfile.arm . \
-            --tag $(echo "${DOCKER_USERNAME}" | tr '[:upper:]' '[:lower:]')/nginx-modsecurity:latest
+            --tag $(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')/${IMAGE_NAME}:latest
