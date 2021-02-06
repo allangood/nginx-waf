@@ -9,7 +9,6 @@ on:
     pull_request:
 
 env:
-  # TODO: Change variable to your image's name.
   IMAGE_NAME: nginx-modsecurity
 
 jobs:
@@ -24,11 +23,12 @@ jobs:
         id: buildx
         uses: crazy-max/ghaction-docker-buildx@v1
         with:
-          version: latest
+          buildx-version: latest
       - name: Build dockerfile (with push)
         run: |
             docker buildx build \
             --platform=linux/amd64,linux/arm/v7,linux/arm64 \
             --output "type=image,push=true" \
-            --file ./Dockerfile.arm . \
+            --compress \
+            --file ./Dockerfile . \
             --tag $(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')/${IMAGE_NAME}:latest
