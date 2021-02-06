@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:alpine AS build
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
@@ -135,12 +135,21 @@ RUN echo "cleaning all after build..." \
   && mv ${NGINX_CONF_DIR} ${NGINX_CONF_DIR}.orig \
   && mkdir ${NGINX_CONF_DIR}/
 
-# Final steps
-RUN echo "adding modsecurity dependency & openssl..." \
-  && apk add --no-cache libstdc++ yajl libmaxminddb openssl
-
+# New Layer
+FROM nginx:alpine
+COPY --from=build /usr/lib/libmodsecurity* /usr/lib/
+COPY --from=build /etc/nginx.orig /etc/nginx.orig
+COPY --from=build /usr/lib/nginx/modules /usr/lib/nginx/modules
 COPY src /
 COPY conf/nginx.conf /etc/nginx.orig/
+
+WORKDIR /
+
+# Final steps
+RUN echo "adding modsecurity dependency & openssl..." \
+  && apk add --no-cache libstdc++ yajl libmaxminddb openssl \
+  && rm -rf /etc/nginx \
+  && mkdir /etc/nginx
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
