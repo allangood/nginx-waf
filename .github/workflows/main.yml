@@ -1,6 +1,8 @@
 name: 'Docker push to ARM'
 
 on:
+  schedule:
+    - cron:  '01 01 * * *'
   push:
     paths-ignore:
       - '**.md'
