@@ -1,4 +1,4 @@
-FROM nginx:alpine AS build
+FROM nginx:stable-alpine AS build
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
