@@ -136,7 +136,7 @@ RUN echo "cleaning all after build..." \
   && mkdir ${NGINX_CONF_DIR}/
 
 # New Layer
-FROM nginx:alpine
+FROM nginx:stable-alpine
 COPY --from=build /usr/lib/libmodsecurity* /usr/lib/
 COPY --from=build /etc/nginx.orig /etc/nginx.orig
 COPY --from=build /usr/lib/nginx/modules /usr/lib/nginx/modules
