@@ -1,14 +1,13 @@
 name: 'Docker build'
 
 on:
-  workflow_dispatch: []
+  workflow_dispatch:
   push:
     paths-ignore:
       - '**.md'
       - '**.json'
       - '**.yaml'
       - 'LICENSE'
-      - '.github/workflows/**'
       - 'examples/**'
     branches:
       - main
