@@ -147,7 +147,7 @@ WORKDIR /
 
 # Final steps
 RUN echo "adding modsecurity dependency & openssl..." \
-  && apk add --no-cache libstdc++ yajl libmaxminddb openssl \
+  && apk add --no-cache libstdc++ yajl libmaxminddb openssl pcre \
   && rm -rf /etc/nginx \
   && mkdir /etc/nginx
 
